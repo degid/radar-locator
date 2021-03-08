@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<control name="Зал №1">
+	<equipment name="Компрессор 1">
+		<state>ТП1</state>
+		<state>ТП2</state>
+		<state>ТП3</state>
+		<state>ТП4</state>
+		<state>ТП5</state>
+		<state>ТП6</state>
+		<state>ТП7</state>
+		<state>ТП8</state>
+		<state>ТП9</state>
+	</equipment>
+	<equipment name="Компрессор 2">
+		<state>ТП1</state>
+		<state>ТП2</state>
+		<state>ТП3</state>
+		<state>ТП4</state>
+		<state>ТП5</state>
+		<state>ТП6</state>
+		<state>ТП7</state>
+		<state>ТП8</state>
+		<state>ТП9</state>
+	</equipment>
+	<equipment name="Компрессор 3">
+		<state>ТП1</state>
+		<state>ТП2</state>
+		<state>ТП3</state>
+		<state>ТП4</state>
+		<state>ТП5</state>
+		<state>ТП6</state>
+		<state>ТП7</state>
+		<state>ТП8</state>
+		<state>ТП9</state>
+	</equipment>
+	<equipment name="Компрессор 4">
+		<state>ТП1</state>
+		<state>ТП2</state>
+		<state>ТП3</state>
+		<state>ТП4</state>
+		<state>ТП5</state>
+		<state>ТП6</state>
+		<state>ТП7</state>
+		<state>ТП8</state>
+		<state>ТП9</state>
+	</equipment>
+</control>
