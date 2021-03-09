@@ -23,15 +23,21 @@ private slots:
     void changeLevelPrev(QSharedPointer<Node>);
     void setStatus(QSharedPointer<Node>);
 
+protected:
+    void timerEvent(QTimerEvent *event) override;
+
 private:
     QGraphicsScene *scene;
     QSignalMapper *mapper;
     QSharedPointer<Node> node;
     void addNode(QMap<QString, QSharedPointer<Node>> *map,
                  const QString name,
+                 bool isTree,
                  QSharedPointer<Node> parent);
     void readXML(const QString fileName);
     void changeLevel(QSharedPointer<Node> *);
+    void setStartLevel();
+    void randStatus();
 
 };
 #endif // GRAPHWIDGET_H

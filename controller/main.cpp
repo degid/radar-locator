@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     GraphWidget *widget = new GraphWidget;
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
+    mainWindow.setWindowTitle("Mnemonic diagram");
     mainWindow.show();
     return a.exec();
 }

@@ -53,14 +53,15 @@ void Equipment::setPosition(int numPos=0)
 
 Node::Node()
 {
-    Node("", nullptr);
+    Node("", nullptr, true);
 }
 
-Node::Node(QString title, QSharedPointer<Node> parent)
+Node::Node(QString title, QSharedPointer<Node> parent, bool isTree)
     : equipTmp(nullptr),
       parent(parent),
       title(title),
       status(false),
+      isTree(isTree),
       nodes(QMap<QString, QSharedPointer<Node>>())
 {}
 

@@ -42,13 +42,14 @@ private:
 struct Node
 {
     Node();
-    Node(QString title, QSharedPointer<Node> parent);
+    Node(QString title, QSharedPointer<Node> parent, bool isTree);
     ~Node();
 
     Equipment *equipTmp;
     QSharedPointer<Node> parent;
     QString title;
     bool status;
+    bool isTree;
     QMap<QString, QSharedPointer<Node>> nodes;
 
 };
