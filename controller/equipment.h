@@ -35,15 +35,22 @@ protected:
 
 private:
     QString title;
-    QSharedPointer<Node> node;
+    QWeakPointer<Node> node;
     bool status = false;
 };
 
 struct Node
 {
-    Equipment *equip;
-    QWeakPointer<Node> parent;
-    QMap<QString, QSharedPointer<Node>> _node;
+    Node();
+    Node(QString title, QSharedPointer<Node> parent);
+    ~Node();
+
+    Equipment *equipTmp;
+    QSharedPointer<Node> parent;
+    QString title;
+    bool status;
+    QMap<QString, QSharedPointer<Node>> nodes;
+
 };
 
 #endif // EQUIPMENT_H

@@ -19,7 +19,8 @@ public:
 
 
 private slots:
-    void changeLevel(QSharedPointer<Node>);
+    void changeLevelNext(QSharedPointer<Node>);
+    void changeLevelPrev(QSharedPointer<Node>);
     void setStatus(QSharedPointer<Node>);
 
 private:
@@ -30,6 +31,7 @@ private:
                  const QString name,
                  QSharedPointer<Node> parent);
     void readXML(const QString fileName);
+    void changeLevel(QSharedPointer<Node> *);
 
 };
 #endif // GRAPHWIDGET_H

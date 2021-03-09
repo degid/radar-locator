@@ -8,7 +8,8 @@ Equipment::Equipment(QString title, GraphWidget *graphWidget)
 
 Equipment::~Equipment()
 {
-    node = nullptr;
+    qDebug() << "kill Equipment" << title;
+    node.clear();
 }
 
 QRectF Equipment::boundingRect() const
@@ -41,18 +42,34 @@ void Equipment::setNode(QSharedPointer<Node> _node)
 
 void Equipment::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
-//    QMap<QString, QSharedPointer<Node>>::Iterator it;
-//    for(it = node->_node.begin(); it != node->_node.end(); it++){
-//        qDebug() << it.key() << "EVENT MAP";
-//    }
-
     emit buttonPress(node);
-
 }
 
 void Equipment::setPosition(int numPos=0)
 {
     QPoint pos = QPoint(10, 13 + (20 * numPos * 1.5));
     setPos(pos);
+}
+
+Node::Node()
+{
+    Node("", nullptr);
+}
+
+Node::Node(QString title, QSharedPointer<Node> parent)
+    : equipTmp(nullptr),
+      parent(parent),
+      title(title),
+      status(false),
+      nodes(QMap<QString, QSharedPointer<Node>>())
+{}
+
+Node::~Node()
+{
+    qDebug() << "kill node";
+    QMapIterator<QString, QSharedPointer<Node>> it(nodes);
+    while (it.hasNext()) {
+        it.next();
+        qDebug() << "no kill" << it.key();
+    }
 }

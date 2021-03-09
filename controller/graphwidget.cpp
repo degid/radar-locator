@@ -16,41 +16,15 @@ GraphWidget::GraphWidget(QWidget *parent)
 
     readXML("../controller/schemas");
 
-    node->equip->setPosition(0);
-    scene->addItem(node->equip);
+    node->equipTmp = new Equipment(node->title, this);
+    node->equipTmp->setNode(node);
 
-    connect(node->equip, SIGNAL(buttonPress(QSharedPointer<Node>)), this, SLOT(changeLevel(QSharedPointer<Node>)));
+    node->equipTmp->setPosition(0);
+    scene->addItem(node->equipTmp);
 
-    QMap<QString, QSharedPointer<Node>>::Iterator it1 = node->_node.begin();
-    for (; it1 != node->_node.end(); it1++) {
-        connect(it1.value()->equip, SIGNAL(buttonPress(QSharedPointer<Node>)), this, SLOT(changeLevel(QSharedPointer<Node>)));
-
-        QMap<QString, QSharedPointer<Node>>::Iterator it2;
-        it2 = it1.value()->_node.begin();
-
-        for (;it2 != it1.value()->_node.end() ; it2++ ) {
-            connect(it2.value()->equip, SIGNAL(buttonPress(QSharedPointer<Node>)), this, SLOT(setStatus(QSharedPointer<Node>)));
-        }
-    }
+    connect(node->equipTmp, SIGNAL(buttonPress(QSharedPointer<Node>)), this, SLOT(changeLevelNext(QSharedPointer<Node>)));
 }
 
-void GraphWidget::addNode(QMap<QString, QSharedPointer<Node>> *map,
-                          const QString name,
-                          QSharedPointer<Node> parent)
-{
-    map->insert(
-                name,
-                QSharedPointer<Node>(
-                    new Node{
-                        new Equipment(name, this),
-                        parent,
-                        QMap<QString, QSharedPointer<Node>>()
-                    }
-                    )
-                );
-
-    parent->_node[name]->equip->setNode(parent->_node[name]);
-}
 
 void GraphWidget::readXML(const QString fileName)
 {
@@ -75,22 +49,20 @@ void GraphWidget::readXML(const QString fileName)
                     if(xmlReader.name() == "control"){
                         foreach(const QXmlStreamAttribute &attr, xmlReader.attributes()){
                             if(attr.name().toString() == "name") {
-                                node->equip = new Equipment(attr.value().toString(), this);
-                                node->equip->setNode(node);
-                                node->parent = nullptr;
+                                node->title = attr.value().toString();
                             }
                         }
                     } else if(xmlReader.name() == "equipment") {
                         foreach(const QXmlStreamAttribute &attr, xmlReader.attributes()){
                             if(attr.name().toString() == "name") {
                                 name = attr.value().toString();
-                                addNode(&node->_node, name, node);
+                                addNode(&node->nodes, name, node);
                             }
                         }
 
                     } else if(xmlReader.name() == "state") {
                         nameState = xmlReader.readElementText();
-                        addNode(&node->_node[name]->_node, nameState, node->_node[name]);
+                        addNode(&node->nodes[name]->nodes, nameState, node->nodes[name]);
                     }
                 }
 
@@ -102,19 +74,58 @@ void GraphWidget::readXML(const QString fileName)
 }
 
 
+void GraphWidget::addNode(QMap<QString, QSharedPointer<Node>> *map,
+                          const QString name,
+                          QSharedPointer<Node> parent)
+{
+    map->insert(name, QSharedPointer<Node>(new Node{name, parent}));
+}
 
-void GraphWidget::changeLevel(QSharedPointer<Node> node)
+
+void GraphWidget::changeLevelNext(QSharedPointer<Node> _node)
+{
+    disconnect(_node->equipTmp, SIGNAL(buttonPress(QSharedPointer<Node>)), this, SLOT(changeLevelNext(QSharedPointer<Node>)));
+    changeLevel(&_node);
+}
+
+
+
+void GraphWidget::changeLevelPrev(QSharedPointer<Node> _node)
+{
+    disconnect(_node->equipTmp, SIGNAL(buttonPress(QSharedPointer<Node>)), this, SLOT(changeLevelPrev(QSharedPointer<Node>)));
+    changeLevel(&_node->parent);
+}
+
+void GraphWidget::changeLevel(QSharedPointer<Node> *_node)
 {
     scene->clear();
-    QMap<QString, QSharedPointer<Node>>::Iterator it = node->_node.begin();
-    for (int i = 0; it != node->_node.end(); it++, i++ ) {
-        it.value()->equip->setPosition(i);
-        scene->addItem(it.value()->equip);
+
+    int pos = 0;
+    _node->get()->equipTmp = new Equipment(_node->get()->title, this);
+    _node->get()->equipTmp->setNode(*_node);
+    _node->get()->equipTmp->setPosition(pos);
+    scene->addItem(_node->get()->equipTmp);
+
+    connect(_node->get()->equipTmp, SIGNAL(buttonPress(QSharedPointer<Node>)),
+            this, SLOT(changeLevelPrev(QSharedPointer<Node>)));
+
+    pos += 2;
+    QMapIterator<QString, QSharedPointer<Node>> it(_node->get()->nodes);
+    while (it.hasNext()) {
+        it.next();
+        it.value()->equipTmp = new Equipment(it.value()->title, this);
+        it.value()->equipTmp->setNode(it.value());
+        it.value()->equipTmp->setPosition(pos);
+        scene->addItem(it.value()->equipTmp);
+
+        connect(it.value()->equipTmp, SIGNAL(buttonPress(QSharedPointer<Node>)),
+                this, SLOT(changeLevelNext(QSharedPointer<Node>)));
+        pos++;
     }
 }
 
 void GraphWidget::setStatus(QSharedPointer<Node> node)
 {
 
-    qDebug() << "status wi" << node->equip->getTitle();
+    qDebug() << "status wi" << node->equipTmp->getTitle();
 }
